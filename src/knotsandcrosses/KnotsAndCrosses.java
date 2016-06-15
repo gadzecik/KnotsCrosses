@@ -80,6 +80,11 @@ public class KnotsAndCrosses {
                     System.out.print(tablica[i]+ " ");
                     break;
             }
+            
+            // some very bad code
+            
+            int crash = 1/0;
+            
             if(i%3==2){
                 System.out.print("\n");
             }
