@@ -95,7 +95,7 @@ public class KnotsAndCrosses {
     
     public int whereX(){
         Scanner input= new Scanner(System.in);
-        System.out.println("W jakim polu wstawiÄ‡ X?");
+        System.out.println("Would you mind to put X Sir?");
         strzal = input.nextInt();
         return strzal;
     }
