@@ -66,6 +66,7 @@ public class KnotsAndCrosses {
         }
     }
     
+    // some silly comment
     public void rysujTablice(){
         for(int i=0;i<9;i++){
             switch (tablica[i]) {
