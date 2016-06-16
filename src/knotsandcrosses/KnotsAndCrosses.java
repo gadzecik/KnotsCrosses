@@ -16,7 +16,7 @@ public class KnotsAndCrosses {
 
 
 /* Poprawki:
-    KĂłĹ‚ko nie moĹĽe nadpisaÄ‡ Xa !!
+    ;;; :P
     
     
     */    
