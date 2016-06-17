@@ -16,7 +16,10 @@ public class KnotsAndCrosses {
 
 
 /* Poprawki:
-    ;;; :P
+    - Peter says, there's a mess in this app.
+    - Conditions build only on tabH array. Make them simpler.
+    - Change the language - English, and again Keep it Simple, stupid.
+   
     
     
     */    
@@ -43,7 +46,7 @@ public class KnotsAndCrosses {
         KnotsAndCrosses gra = new KnotsAndCrosses();
         gra.rysujTablice();
         
-        //inna pÄ™tla!!... bo potem siÄ™ gra nie koĹ„czy
+        //Other loop, otherwise it will not end.
         for(int i=0;i<5;i++){
             int a = gra.whereX();
             if(gra.checkX(a) && gra.getLiczbaZnakow()<9){
@@ -59,7 +62,7 @@ public class KnotsAndCrosses {
                 break;
             }else{
                 i--;
-            //u coĹ› dopisaÄ‡.. ĹĽeby sprawdzaĹ‚, czy tablica jest peĹ‚na...!
+            //Another condition to check if the game is finished.
             }
      //   gra.ktoWygral();    
            
@@ -141,7 +144,7 @@ public class KnotsAndCrosses {
                 }
             }    
         
-            // Sprawdzamy, czy sÄ… dwa X na przekÄ…tnej;
+            // Sprawdzamy, if there are two X-es at a diagonal
             if((tab[0]*tab[4]*tab[8]>0 && tab[0]*tab[4]*tab[8]%100==0) || (tab[2]*tab[4]*tab[6]>0 && tab[2]*tab[4]*tab[6]%100==0)){
                 return true;
             }
@@ -232,7 +235,7 @@ public class KnotsAndCrosses {
                     }
                 }    
 
-                // Sprawdzamy, czy sÄ… dwa X na przekÄ…tnej;
+                // Sprawdzamy, if there are two X-es at a diagonal
                 if(tablica[0]*tablica[4]*tablica[8]>0 && tablica[0]*tablica[4]*tablica[8]%100==0){
                     if(tabH[0]==1){
                         tablica[0]=0;
