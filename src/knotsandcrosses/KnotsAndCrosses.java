@@ -15,72 +15,59 @@ public class KnotsAndCrosses {
 
 
 
-/* Poprawki:
-    - Peter says, there's a mess in this app.
-    - Conditions build only on tabH array. Make them simpler.
-    - Change the language - English, and again Keep it Simple, stupid.
-   
+    int shot;
+    int[] tabH= new int[]{0,0,0,0,0,0,0,0,0};
+    int numberOfFullFields=0;
     
-    
-    */    
-    int[] tablica = new int[]{1,2,3,4,5,6,7,8,9};
-    int strzal;
-    int[] tabH;
-    int liczbaZnakow=0;
     /**
      * @param args the command line arguments
      */
     
-    KnotsAndCrosses(){
-        //Zbudujemy tablice pomocniczÄ…
-            tabH = new int[9];
-            for(int i=0;i<tablica.length;i++){
-                if(tablica[i]>0 && tablica[i]<10){
-                    tabH[i]=1;
-                }else{tabH[i]=tablica[i];}
-            }
-    }
-    
+     
     public static void main(String[] args) {
         // TODO code application logic here
-        KnotsAndCrosses gra = new KnotsAndCrosses();
-        gra.rysujTablice();
+        KnotsAndCrosses game = new KnotsAndCrosses();
+        boolean gameOver = false;
         
-        //Other loop, otherwise it will not end.
-        for(int i=0;i<5;i++){
-            int a = gra.whereX();
-            if(gra.checkX(a) && gra.getLiczbaZnakow()<9){
-                gra.wstawX(a);
-                gra.incrementLiczbaZnakow();
-             //   gra.czyKtosWygral();
-                gra.wstawO();
-                gra.incrementLiczbaZnakow();
-                gra.rysujTablice();
-               // gra.czyKtosWygral();
-            }else if(gra.getLiczbaZnakow()==9 ){
-                System.out.println("Koniec gry");
+        game.drawTab();
+        
+        while(gameOver==false){
+            //int a = game.wherePutO();
+            //if(game.checkIfEmpty(a) && game.getNumberOfFullFields()<9){
+            game.shooting();
+            game.putX(game.getShot());
+            game.setNumberOfFullFields(game.getNumberOfFullFields()+1);
+                     //   game.czyKtosWygamel();
+            //game.wherePutO();
+            if(game.getNumberOfFullFields()>=9){
                 break;
-            }else{
-                i--;
-            //Another condition to check if the game is finished.
             }
-     //   gra.ktoWygral();    
-           
+            game.putO(game.wherePutO());
+            game.setNumberOfFullFields(game.getNumberOfFullFields()+1);
+            game.drawTab();
+            System.out.println("number of full fields: " + game.getNumberOfFullFields());
+               // game.czyKtosWygamel();
+            if(game.getNumberOfFullFields()>=9){
+                gameOver=true;
+            }
+            //Another condition to check if the game is finished.
         }
-    }
-    
+        System.out.println("Game Over");
+        game.whoWon();          
+        game.drawTab();
+    }   
     // some silly comment
-    public void rysujTablice(){
+    public void drawTab(){
         for(int i=0;i<9;i++){
-            switch (tablica[i]) {
-                case 0:
+            switch (tabH[i]) {
+                case -1:
                     System.out.print("O ");
                     break;
-                case 10:
+                case 1:
                     System.out.print("X ");
                     break;
                 default:
-                    System.out.print(tablica[i]+ " ");
+                    System.out.print(i+1 + " ");
                     break;
             }
             if(i%3==2){
@@ -89,324 +76,348 @@ public class KnotsAndCrosses {
         }
     }
     
-    public int getLiczbaZnakow(){
-        return liczbaZnakow;
+    public void whoWon(){
+        if(ThreeXInLine()){
+            System.out.println("Congratulations! You won!!!");
+        }else if(ThreeOInLine()){
+            System.out.println("I'm sorry, you lost ;(");
+        }else{
+            System.out.println("It's a draw!");
+        }
     }
     
-    public void incrementLiczbaZnakow(){
-        this.liczbaZnakow++;
+    public int getNumberOfFullFields(){
+        return numberOfFullFields;
     }
     
-    public int whereX(){
+    public void setNumberOfFullFields(int num){
+        this.numberOfFullFields=num;
+    }
+    
+    public int getShot(){
+        return shot;
+    }
+    
+    public void putShot(int shot){
+        this.shot=shot;
+    }
+    
+    public void incrementNumberOfFullFields(){
+        this.numberOfFullFields++;
+    }
+    
+    public void shooting(){
+        Scanner input= new Scanner(System.in);
+        this.shot=0;
+        while(this.getNumberOfFullFields()<9 && checkIfEmpty(this.shot)==false){
+            System.out.println("Would you mind to put X Sir?");
+            this.shot = input.nextInt();
+        }
+     //   return shot;
+        System.out.println("You chose to put X in field "+ this.shot);    
+    }
+    
+  /*  public int whereX(){
         Scanner input= new Scanner(System.in);
         System.out.println("Would you mind to put X Sir?");
-        strzal = input.nextInt();
-        return strzal;
+        shot = input.nextInt();
+        return shot;
+    } */
+    
+    // Check if the space is empty.
+    public boolean checkIfEmpty(int shot){
+        return 0<shot && shot<10 && tabH[shot-1]==0;       
     }
     
-    public boolean checkX(int strzal){
-        return 0<strzal && strzal<10 && tabH[strzal-1]==1;       
-    }
-    
-    public void wstawX(int strzal){
-        this.tablica[strzal-1]=10;
-        tabH[strzal-1]=10;
+    public void putX(int shot){
+        this.tabH[shot-1]=1;
+       // tabH[shot-1]=10;
         
     }
     
-    public void wstawO(){
-        if(czyDwaO(tablica)){wstawKolko(5);
-        }else if(czyDwaX(tablica)){wstawKolko(1);
-        }else if(czyKrzyz(tablica)){wstawKolko(2);
-        }else if(czyXwRogu(tablica)){wstawKolko(3);
-        }else if(czySrodek(tablica)){wstawKolko(4);
-        }else if(czyKrzyzO(tablica)){wstawKolko(6);
-        }else if(czyOwRogu(tablica)){wstawKolko(7);
-        }else if(czySrodekO(tablica)){wstawKolko(8);
-        }else{wstawKolko(9);}
+    public void putO(int place){
+        this.tabH[place]=-1;
+       // tabH[shot-1]=10;
+        
     }
+    
+    public int wherePutO(){
+        if(oneXInCorner()){return wherePutO(6);
+        }else if(TwoOInLine()){return wherePutO(5);
+        }else if(TwoXInLine() && tabH[wherePutO(1)]==0){return wherePutO(1);
+        }else if(xOnCross() && tabH[wherePutO(2)]==0){return wherePutO(2);
+        }else if(xInCorner() && tabH[wherePutO(3)]==0){return wherePutO(3);
+        }else if(xInMiddle() && tabH[wherePutO(9)]==0){return wherePutO(9);
+        }else if(oOnCross() && tabH[wherePutO(6)]==0){return wherePutO(6);
+        }else if(oInCorner() && tabH[wherePutO(7)]==0){return wherePutO(7);
+        }else if(oInMiddle() && tabH[wherePutO(9)]==0){return wherePutO(9);
+        }else{return wherePutO(9);}
+    }
+    
+
+    public boolean oneXInCorner(){
+        return this.getNumberOfFullFields()==1 && (tabH[0]==1 || tabH[2]==1 || tabH[6]==1 || tabH[8]==1);
+    }
+    public boolean TwoXInLine(){
         
-    public boolean czyDwaX(int[] tab){
         
-        
-        if(tab.length==9){
-            // Sprawdzamy, czy sÄ… dwa X w jednym wierszu;
-            for(int i=0;i<9;i+=3){
-                if(tab[i]*tab[i+1]*tab[i+2]>0 &&  tab[i]*tab[i+1]*tab[i+2]%100==0){
-                    return true;
-                }
-            }            
-        
-            //Sprawdzamy, czy sÄ… dwa X w jednej kolumnie;        
-            for(int i=0;i<3;i++){
-                if(tab[i]*tab[3+i]*tab[6+i]>0 &&  tab[i]*tab[3+i]*tab[6+i]%100==0){
-                    return true;
-                }
-            }    
-        
-            // Sprawdzamy, if there are two X-es at a diagonal
-            if((tab[0]*tab[4]*tab[8]>0 && tab[0]*tab[4]*tab[8]%100==0) || (tab[2]*tab[4]*tab[6]>0 && tab[2]*tab[4]*tab[6]%100==0)){
+        //Two X in one row
+        for(int i=0;i<9;i+=3){
+            if(tabH[i]+tabH[i+1]+tabH[i+2]==2){
                 return true;
             }
-        
-        }
-        return false;
-    }
-    
-    public boolean czyKrzyz(int[] tab){
-        if(tab.length==9){
-            
-            //JeĹ›li na krzyĹĽu 25846 sÄ… dwa krzyĹĽyki w ramionach, to suma tych wyrazĂłw w tabH wynosi co najmniej 20
-            return tabH[1]+tabH[3]+tabH[4]+tabH[5]+tabH[7]>20 && tabH[4]==1;
-        
-        }
-        return false;
-    }
-    public boolean czyXwRogu(int[] tab){
-        return tab[0]==10 || tab[2]==10 || tab[6]==10 || tab[8]==10;
-    }
-    public boolean czySrodek(int[] tab){
-        return tab[4]==10;
-        //uwaga, w tym przypadku powinien byÄ‡ tylko 1 krzyzyk na tablicy i zadnego kolka
-    }
-    public boolean czyDwaO(int[] tab){
-        // Teraz lamiemy zasadÄ™, ĹĽeby nie powtarzaÄ‡ kodu... potem do tego wrĂłcimy
-        if(tab.length==9){
-            for(int i=0;i<9;i+=3){
-                if(tabH[i]+tabH[i+1]+tabH[i+2]==1){
-                    return true;
-                }
-            }            
-        
-            //Sprawdzamy, czy sÄ… dwa X w jednej kolumnie;        
-            for(int i=0;i<3;i++){
-                if(tabH[i]+tabH[3+i]+tabH[6+i]==1){
-                    return true;
-                }
-            }    
-        
-            // Sprawdzamy, czy sÄ… dwa X na przekÄ…tnej;
-            if(tabH[0]+tabH[4]+tabH[8]==1 || tabH[2]+tabH[4]+tabH[6]==1){
+        }            
+
+        //two X in one columne        
+        for(int i=0;i<3;i++){
+            if(tabH[i]+tabH[3+i]+tabH[6+i]==2){
                 return true;
             }
-        
         }
-        return false;
-    }
-    public boolean czyKrzyzO(int[] tab){
-        return (tabH[1]+tabH[3]+tabH[5]+tabH[7]==2 || tabH[1]+tabH[3]+tabH[5]+tabH[7]==11) && tabH[4]==1;
         
-    }
-    public boolean czyOwRogu(int[] tab){
-        return tabH[0]+tabH[2]+tabH[6]+tabH[8]<3;
-    }
-    public boolean czySrodekO(int[] tab){
-        return tabH[4]==0;
+        //two X in diagonal
+        return tabH[0]+tabH[4]+tabH[8]==2 || tabH[2]+tabH[4]+tabH[6]==2;
     }
     
-    public void wstawKolko(int i){
+    public boolean xOnCross(){
+               
+        //If there are two X-es in the middle cross 25846 (arms)
+        return tabH[1]+tabH[3]+tabH[5]+tabH[7]>=2 && tabH[4]==0;
+    }
+    public boolean xInCorner(){
+        return tabH[0]==1 || tabH[2]==1 || tabH[6]==1 || tabH[8]==1;
+    }
+    public boolean xInMiddle(){
+        return tabH[4]==1;
+        //In this case, there should be just one X in the tabH, and no circles.
+    }
+    public boolean TwoOInLine(){
+        
+        //Two O in one row
+        for(int i=0;i<9;i+=3){
+            if(tabH[i]+tabH[i+1]+tabH[i+2]==-2){
+                return true;
+            }
+        }            
+
+        //two X in one columne        
+        for(int i=0;i<3;i++){
+            if(tabH[i]+tabH[3+i]+tabH[6+i]==-2){
+                return true;
+            }
+        }
+        
+        //two O in diagonal
+        return tabH[0]+tabH[4]+tabH[8]==-2 || tabH[2]+tabH[4]+tabH[6]==-2;
+    }
+    public boolean oOnCross(){
+        return tabH[1]+tabH[3]+tabH[5]+tabH[7]<=-2 && tabH[4]==0;    
+    }
+    public boolean oInCorner(){
+        return tabH[0]==-1 || tabH[2]==-1 || tabH[6]==-1 || tabH[8]==-1;
+    }
+    public boolean oInMiddle(){
+        return tabH[4]==-1;
+    }
+    
+    public int wherePutO(int i){
         switch(i){
             
-            // Dla opcji 2 krzyzyki w linii
+            // For two X in row
             case 1:
                 for(int a=0;a<9;a+=3){
-                    if(tablica[a]*tablica[a+1]*tablica[a+2]>0 &&  tablica[a]*tablica[a+1]*tablica[a+2]%100==0){
+                    if(tabH[a]+tabH[a+1]+tabH[a+2]==2){
                         for(int b=0;b<3;b++){
-                            if(tabH[a+b]==1){
-                                tablica[a+b]=0;
-                                tabH[a+b]=0;
-                                break;
+                            if(tabH[a+b]==0){
+                                return a+b;
                             }
-                        }
-                        
+                        }    
                     }
                 }            
 
-                //Sprawdzamy, czy sÄ… dwa X w jednej kolumnie;        
+                //For two X in column 
                 for(int a=0;a<3;a++){
-                    if(tablica[a]*tablica[a+3]*tablica[a+6]>0 &&  tablica[a]*tablica[3+a]*tablica[6+a]%100==0){
+                    if(tabH[a]+tabH[a+3]+tabH[a+6]==2){
                         for(int b=0;b<9;b+=3){
-                            if(tabH[a+b]==1){
-                                tablica[a+b]=0;
-                                tabH[a+b]=0;
-                                break;
+                            if(tabH[a+b]==0){
+                                return a+b;
                             }
                         }
                     }
-                }    
+                }
+                
 
                 // Sprawdzamy, if there are two X-es at a diagonal
-                if(tablica[0]*tablica[4]*tablica[8]>0 && tablica[0]*tablica[4]*tablica[8]%100==0){
-                    if(tabH[0]==1){
-                        tablica[0]=0;
-                        tabH[0]=0;
-                        break;
-                    }else if(tabH[4]==1){
-                        tablica[4]=0;
-                        tabH[4]=0;
-                        break;
-                    }else if(tabH[8]==1){
-                        tablica[8]=0;
-                        tabH[8]=0;
-                        break;
+                
+                if(tabH[0]+tabH[4]+tabH[8]==2){
+                    if(tabH[0]==0){
+                        return 0;
+                    }else if(tabH[4]==0){
+                        return 4;
+                    }else if(tabH[8]==0){
+                        return 8;
                     }
-                    
-                }else if(tablica[2]*tablica[4]*tablica[6]>0 && tablica[2]*tablica[4]*tablica[6]%100==0){
-                    if(tabH[2]==1){
-                        tablica[2]=0;
-                        tabH[2]=0;
-                        break;
-                    }else if(tabH[4]==1){
-                        tablica[4]=0;
-                        tabH[4]=0;
-                        break;
-                    }else if(tabH[6]==1){
-                        tablica[6]=0;
-                        tabH[6]=0;
-                        break;
+
+                }else if(tabH[2]+tabH[4]+tabH[6]==2){
+                    if(tabH[2]==0){
+                        return 2;
+                    }else if(tabH[4]==0){
+                        return 4;
+                    }else if(tabH[6]==0){
+                        return 6;
                     }
                 }
+
+
                 
-                
-                break;
-                
-            // Dla opcji dwa X w ramionach krzyza 13457    
+            // Case - two X in arms of the cross 13457   
             case 2:
-                tablica[4]=0;
-                tabH[4]=0;
-                break;
+                return 4;
                 
-            // Dla opcji X w rogu
+            // X in a corner
             case 3:
-                if(tablica[0]==10){
-                    tablica[8]=0;
-                    tabH[8]=0;
-                }else if(tablica[2]==10){
-                    tablica[6]=0;
-                    tabH[6]=0;
-                }else if(tablica[6]==10){
-                    tablica[2]=0;
-                    tabH[2]=0;
-                }else if(tablica[8]==10){
-                    tablica[0]=0;
-                    tabH[0]=0;
+                if(tabH[0]==1){
+                    return 8;
+                }else if(tabH[2]==1){
+                    return 6;
+                }else if(tabH[6]==1){
+                    return 2;
+                }else if(tabH[8]==1){
+                    return 0;
                 }
-                break;
                 
-            // Dla krzyzyka na srodku    
+            // X in middle    
             case 4:
-                tablica[0]=0;
-                tabH[0]=0;
-                break;
+                return 0;
                 
-                //Dla opcji dwa O
+                //two O in line
             case 5:
-                // Najpierw sprawdzamy wiersze
+                // two O in row
                 for(int a=0;a<9;a+=3){
-                    if(tabH[a]+tabH[a+1]+tabH[a+2]==1){
+                    if(tabH[a]+tabH[a+1]+tabH[a+2]==-2){
                          for(int b=0;b<3;b++){
-                            if(tabH[a+b]==1){
-                                tablica[a+b]=0;
-                                tabH[a+b]=0;
-                                break;
+                            if(tabH[a+b]==0){
+                                return a+b;
                             }
                         }
                     }
                 }
                             
         
-            //Sprawdzamy, czy sÄ… dwa O w jednej kolumnie;        
-            for(int a=0;a<3;a++){
-                if(tabH[a]+tabH[3+a]+tabH[6+a]==1){
-                    for(int b=0;b<9;b+=3){
-                            if(tabH[a+b]==1){
-                                tablica[a+b]=0;
-                                tabH[a+b]=0;
-                                break;
+                //two O in column       
+                for(int a=0;a<3;a++){
+                    if(tabH[a]+tabH[3+a]+tabH[6+a]==-2){
+                        for(int b=0;b<9;b+=3){
+                                if(tabH[a+b]==0){
+                                    return a+b;
+                                }
                             }
-                        }
-                    
-                }
-            }    
+
+                    }
+                }    
         
-            // Sprawdzamy, czy sÄ… dwa O na przekÄ…tnej;
-            if(tabH[0]+tabH[4]+tabH[8]==1 || tabH[2]+tabH[4]+tabH[6]==1){
-                if(tabH[0]==1){
-                    tablica[0]=0;
-                    tabH[0]=0;
-                    break;
-                }else if(tabH[4]==1){
-                    tablica[4]=0;
-                    tabH[4]=0;
-                    break;
-                }else if(tabH[8]==1){
-                    tablica[8]=0;
-                    tabH[8]=0;
-                    break;
+                // two O in diagonal
+                if(tabH[0]+tabH[4]+tabH[8]==-2){
+                    if(tabH[0]==0){
+                        return 0;
+                    }else if(tabH[4]==0){
+                        return 4;
+                    }else if(tabH[8]==0){
+                        return 8;
+                    }
+
+                }else if(tabH[2]+tabH[4]+tabH[6]==-2){
+                    if(tabH[2]==0){
+                        return 2;
+                    }else if(tabH[4]==0){
+                        return 4;
+                    }else if(tabH[6]==0){
+                        return 6;
+                    }
                 }
-                    
-            }else if(tablica[2]*tablica[4]*tablica[6]>0 && tablica[2]*tablica[4]*tablica[6]%100==0){
-                if(tabH[2]==1){
-                    tablica[2]=0;
-                    tabH[2]=0;
-                    break;
-                }else if(tabH[4]==1){
-                    tablica[4]=0;
-                    tabH[4]=0;
-                    break;
-                }else if(tabH[6]==1){
-                    tablica[6]=0;
-                    tabH[6]=0;
-                    break;
-                }
-            }
-                
-                
-                break;
+
+               
                 
                 
                                
-                //Dla opcji dwa O w ramionach krzyza
+                //two O in the cross 13457 
             case 6:
-                tablica[4]=0;
-                tabH[4]=0;
-                break;
+                return 4;
                 
-                //Dla opcji O w rogu
+                //O in corner
             case 7:
-                if(tablica[0]==0){
-                    tablica[8]=0;
-                    tabH[8]=0;
-                }else if(tablica[2]==0){
-                    tablica[6]=0;
-                    tabH[6]=0;
-                }else if(tablica[6]==0){
-                    tablica[2]=0;
-                    tabH[2]=0;
+                if(tabH[0]==-1){
+                    return 8;
+                }else if(tabH[2]==-1){
+                    return 6;
+                }else if(tabH[6]==-1){
+                    return 2;
                 }else {
-                    tablica[0]=0;
-                    tabH[0]=0;
+                    return 0;
                 }
-                break;
-                
-                //Dla opcji O na Ĺ›rodku
+               
+                //O in middle
             case 8:
-                tablica[4]=0;
-                tabH[4]=0;
-                break;
+                return 0;
                 
-                //Wstaw O w wolne miejsce
+                //Put O wherever
             default:
-                for(int j=0;j<9;j++){
-                    if(tabH[j]==1){
-                        tablica[j]=0;
-                        tabH[j]=0;
-                        break;
+                for(int j=0;j<8;j++){
+                    if(tabH[j]==0){
+                        return j;
                     }
                 }
+                return 8;
         }
-    
+    //return 8;
     }
    
+    
+    public boolean ThreeXInLine(){
+        
+        
+        //Three X in one row
+        for(int i=0;i<9;i+=3){
+            if(tabH[i]+tabH[i+1]+tabH[i+2]==3){
+                return true;
+            }
+        }            
+
+        //three X in one columne        
+        for(int i=0;i<3;i++){
+            if(tabH[i]+tabH[3+i]+tabH[6+i]==3){
+                return true;
+            }
+            
+        }
+        
+        //three X in diagonal
+        
+        return tabH[0]+tabH[4]+tabH[8]==3 || tabH[2]+tabH[4]+tabH[6]==3;
+    }
+    
+    
+    public boolean ThreeOInLine(){
+        
+        
+        //Three X in one row
+        for(int i=0;i<9;i+=3){
+            if(tabH[i]+tabH[i+1]+tabH[i+2]==-3){
+                return true;
+            }
+        }            
+
+        //three X in one columne        
+        for(int i=0;i<3;i++){
+            if(tabH[i]+tabH[3+i]+tabH[6+i]==-3){
+                return true;
+            }
+            
+        }
+        
+        //three X in diagonal
+        
+        return tabH[0]+tabH[4]+tabH[8]==-3 || tabH[2]+tabH[4]+tabH[6]==-3;
+    }
     
 }
