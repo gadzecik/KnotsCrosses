@@ -29,6 +29,9 @@ public class KnotsAndCrosses {
         KnotsAndCrosses game = new KnotsAndCrosses();
         boolean gameOver = false;
         
+        
+        GameBoard board = new GameBoard();
+        board.gboard();
         game.drawTab();
         
         while(gameOver==false){
